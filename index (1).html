@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Huyoza Model Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #241220;
+    --bg-deep: #140A12;
+    --ivory: #F3ECE3;
+    --ivory-dim: #C9BEB4;
+    --gold: #B8935A;
+    --gold-bright: #D9B679;
+    --rose: #9C6B78;
+    --line: rgba(243,236,227,0.14);
+    --radius: 2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ivory);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 32px;}
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(36,18,32,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+  .logo{font-family:'Fraunces', serif; font-size:1.15rem; letter-spacing:0.02em;}
+  .logo em{font-style:normal; color:var(--gold-bright);}
+  .nav-links{display:flex; gap:36px; font-size:0.88rem; color:var(--ivory-dim);}
+  .nav-links a{text-decoration:none; transition:color .2s;}
+  .nav-links a:hover{color:var(--gold-bright);}
+  .nav-cta{
+    border:1px solid var(--gold);
+    color:var(--gold-bright);
+    padding:9px 22px;
+    font-size:0.85rem;
+    text-decoration:none;
+    border-radius:999px;
+    transition:.2s;
+  }
+  .nav-cta:hover{background:var(--gold); color:var(--bg-deep);}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:120px 0 100px;
+    overflow:hidden;
+    background:var(--bg-deep);
+  }
+  .hero-video{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover;
+    mix-blend-mode:screen;
+    opacity:0.55;
+    pointer-events:none;
+  }
+  .hero-scrim{
+    position:absolute; inset:0;
+    background:linear-gradient(100deg, var(--bg-deep) 0%, rgba(20,10,18,0.75) 32%, rgba(20,10,18,0.15) 62%, transparent 85%);
+    pointer-events:none;
+  }
+  .hero .wrap{ position:relative; z-index:2; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:0.75rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--gold-bright);
+    margin-bottom:32px;
+    border:1px solid rgba(184,147,90,0.5);
+    border-radius:999px;
+    padding:9px 20px 9px 16px;
+  }
+  .eyebrow::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--gold-bright); flex-shrink:0;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 5.4vw, 4.4rem);
+    line-height:1.08;
+    max-width:850px;
+    font-weight:500;
+  }
+  .hero h1 .accent{ color:var(--gold-bright); font-style:italic; font-weight:400;}
+  .hero-sub{
+    margin-top:26px; max-width:520px;
+    font-size:1.05rem; color:var(--ivory-dim);
+  }
+  .hero-cta-row{margin-top:44px; display:flex; align-items:center; gap:32px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--gold); color:var(--bg-deep);
+    padding:16px 34px; font-size:0.95rem; font-weight:600;
+    text-decoration:none; border-radius:999px;
+    letter-spacing:0.02em;
+    transition:.2s; display:inline-block;
+    border:1px solid var(--gold);
+  }
+  .btn-primary:hover{background:transparent; color:var(--gold-bright);}
+  .btn-text{
+    color:var(--ivory); font-size:0.95rem; font-weight:600;
+    text-decoration:none; position:relative; padding-bottom:2px;
+    border-bottom:1px solid rgba(243,236,227,0.35);
+    transition:.2s;
+  }
+  .btn-text:hover{ color:var(--gold-bright); border-bottom-color:var(--gold-bright); }
+
+  /* signature ring stat */
+  .ring-stat{display:flex; align-items:center; gap:14px;}
+  .ring{
+    position:relative; width:64px; height:64px; flex-shrink:0;
+  }
+  .ring svg{transform:rotate(-90deg);}
+  .ring circle{fill:none; stroke-width:3;}
+  .ring .track{stroke:rgba(243,236,227,0.14);}
+  .ring .fill{
+    stroke:var(--gold-bright);
+    stroke-dasharray:175.9; /* 2*pi*28 */
+    stroke-dashoffset:174.1; /* leaves a sliver = "top 1%" */
+    stroke-linecap:round;
+  }
+  .ring-label{font-size:0.78rem; color:var(--ivory-dim); line-height:1.3;}
+  .ring-label b{display:block; color:var(--ivory); font-family:'Fraunces',serif; font-size:1rem; font-weight:500;}
+
+  /* ---------- SECTION SHARED ---------- */
+  section{padding:96px 0;}
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head .tag{
+    font-size:0.78rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--gold-bright); margin-bottom:16px; display:block;
+  }
+  .section-head h2{font-size:clamp(1.7rem, 3.4vw, 2.5rem);}
+  .section-head p{color:var(--ivory-dim); margin-top:16px; font-size:1rem;}
+  .divider{height:1px; background:var(--line); border:none;}
+
+  /* ---------- ABOUT ---------- */
+  /* ---------- WHY US ---------- */
+  .why{padding:96px 0;}
+  .why-intro{max-width:640px; color:var(--ivory-dim); font-size:1.05rem; margin-bottom:48px;}
+  .why-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:760px){ .why-grid{grid-template-columns:1fr;} }
+  .why-item{
+    display:flex; gap:16px; align-items:flex-start;
+    padding:26px; border:1px solid var(--line); border-radius:4px;
+    background:rgba(243,236,227,0.02);
+  }
+  .why-check{
+    flex-shrink:0; width:28px; height:28px; border-radius:50%;
+    border:1px solid var(--gold); color:var(--gold-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.85rem; margin-top:2px;
+  }
+  .why-item h4{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:1rem; margin-bottom:6px; color:var(--ivory);
+  }
+  .why-item p{color:var(--ivory-dim); font-size:0.92rem; margin:0;}
+  .why-closer{
+    margin-top:48px; text-align:center; font-family:'Fraunces',serif; font-size:1.3rem; color:var(--gold-bright);
+  }
+
+  .about{background:var(--bg-deep);}
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;}
+  @media (max-width:800px){ .about-grid{grid-template-columns:1fr; gap:40px;} }
+  .about-copy p{color:var(--ivory-dim); margin-bottom:18px;}
+  .about-copy strong{color:var(--ivory); font-weight:600;}
+  .stat-block{
+    border-left:1px solid var(--gold);
+    padding-left:24px;
+  }
+  .stat-block .num{
+    font-family:'Fraunces', serif; font-size:3.4rem; color:var(--gold-bright); line-height:1;
+  }
+  .stat-block .cap{color:var(--ivory-dim); margin-top:10px; font-size:0.92rem; max-width:280px;}
+  .stat-block + .stat-block{margin-top:40px;}
+
+  /* ---------- PROCESS ---------- */
+  .process-list{margin-top:8px;}
+  .process-item{
+    display:grid; grid-template-columns:70px 1fr; gap:24px;
+    padding:30px 0; border-top:1px solid var(--line);
+  }
+  .process-item:last-child{border-bottom:1px solid var(--line);}
+  .process-num{font-family:'Fraunces', serif; color:var(--gold); font-size:1.6rem; font-weight:400;}
+  .process-item h3{font-size:1.15rem; font-weight:600; font-family:'Inter',sans-serif; margin-bottom:6px;}
+  .process-item p{color:var(--ivory-dim); font-size:0.95rem; max-width:520px;}
+  .process-item.final h3{color:var(--gold-bright);}
+
+  /* ---------- FAQ ---------- */
+  .faq{background:var(--bg-deep);}
+  .faq-item{border-bottom:1px solid var(--line);}
+  .faq-item:first-child{border-top:1px solid var(--line);}
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; color:var(--ivory);
+    font-family:'Fraunces', serif; font-size:1.1rem; font-weight:500;
+    padding:26px 0; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:20px;
+  }
+  .faq-q .plus{
+    font-family:'Inter',sans-serif; font-size:1.3rem; color:var(--gold-bright);
+    transition:transform .25s; flex-shrink:0;
+  }
+  .faq-item.open .faq-q .plus{transform:rotate(45deg);}
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+  }
+  .faq-a p, .faq-a .split{padding-bottom:26px; color:var(--ivory-dim); max-width:640px; font-size:0.96rem;}
+  .split{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-top:1px solid var(--line); padding-top:16px; margin-top:6px; max-width:640px;
+  }
+  .split b{font-family:'Fraunces', serif; color:var(--gold-bright); font-size:1.4rem; font-weight:500;}
+
+  .faq-cta{text-align:center; margin-top:64px;}
+  .faq-cta h3{font-size:1.5rem; margin-bottom:22px;}
+
+  /* ---------- FORM ---------- */
+  .apply{background:var(--bg-deep);}
+  .apply-panel{
+    background:linear-gradient(160deg, rgba(184,147,90,0.08), rgba(156,107,120,0.05));
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:56px;
+  }
+  @media (max-width:640px){ .apply-panel{padding:32px 22px;} }
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:36px;}
+  @media (max-width:700px){ .form-grid{grid-template-columns:1fr;} }
+  .field{display:flex; flex-direction:column; gap:8px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{font-size:0.82rem; color:var(--ivory-dim); letter-spacing:0.02em;}
+  .field input, .field select, .field textarea{
+    background:rgba(243,236,227,0.05);
+    border:1px solid var(--line);
+    color:var(--ivory);
+    padding:13px 14px;
+    font-family:'Inter', sans-serif;
+    font-size:0.95rem;
+    border-radius:var(--radius);
+    outline:none;
+    transition:border-color .2s, background .2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:var(--gold);
+    background:rgba(243,236,227,0.08);
+  }
+  .field textarea{resize:vertical; min-height:90px;}
+  .field select{ appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8935A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+  .form-submit{margin-top:36px; text-align:right;}
+  .form-note{font-size:0.78rem; color:var(--ivory-dim); margin-top:12px; text-align:right;}
+  .success-msg{
+    display:none; text-align:center; padding:40px 0;
+    font-family:'Fraunces', serif; font-size:1.2rem; color:var(--gold-bright);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:48px 0; text-align:center; color:var(--ivory-dim); font-size:0.82rem; border-top:1px solid var(--line);}
+  footer a{color:var(--gold-bright); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">HUYOZA <em>AGENCY</em></div>
+    <div class="nav-links">
+      <a href="#why">Why Us</a>
+      <a href="#about">About</a>
+      <a href="#process">How it works</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="nav-cta" href="#apply">Apply Now</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <video class="hero-video" autoplay muted loop playsinline poster="assets/hero-poster.jpg">
+    <source src="assets/hero-light.mp4" type="video/mp4">
+  </video>
+  <div class="hero-scrim"></div>
+  <div class="wrap">
+    <span class="eyebrow">Top 1% OnlyFans Agency</span>
+    <h1>Earn $10,000 – $100,000<br><span class="accent">per month.</span></h1>
+    <p class="hero-sub">With full professional agency support. You get account management, advertising, content, chatting and 24/7 support. We do all the hard work. You just collect the money.</p>
+    <div class="hero-cta-row">
+      <a class="btn-primary" href="#apply">Apply Now</a>
+      <a class="btn-text" href="#about">Learn more</a>
+    </div>
+    <div class="hero-cta-row" style="margin-top:36px;">
+      <div class="ring-stat">
+        <div class="ring">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle class="track" cx="32" cy="32" r="28"/>
+            <circle class="fill" cx="32" cy="32" r="28"/>
+          </svg>
+        </div>
+        <div class="ring-label">Every model we manage lands in the<b>Top 1% of earners</b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:24px;">
+      <span class="tag">Why Us?</span>
+      <h2>Our team handles everything.</h2>
+    </div>
+    <p class="why-intro">Our team consists of experienced specialists who will handle everything. You focus only on creating content.</p>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>OnlyFans account management</h4><p>You don't write to fans or reply to messages.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>Professional advertising</h4><p>TikTok, Instagram, X and other platforms.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>Private team support</h4><p>Dedicated team available for you 24/7.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>Material editing</h4><p>You send raw photos/videos, we do the rest.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>Weekly payouts</h4><p>Starting from the first month.</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✓</div>
+        <div><h4>Zero risk</h4><p>We cover all advertising, tools and promotion costs.</p></div>
+      </div>
+    </div>
+    <p class="why-closer">Your only job is creating content. We handle everything else.</p>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-copy">
+      <span class="tag" style="display:block; margin-bottom:16px;">About Us</span>
+      <h2 style="margin-bottom:20px; font-size:1.9rem;">We know OnlyFans inside out.</h2>
+      <p>We are a team of specialists in advertising, content, chatting, sales psychology and account scaling. We do what most models hate — and we do it better than 99% of the market.</p>
+      <p><strong>Every one of our models belongs to the top 1% highest-earning creators on OnlyFans.</strong></p>
+      <p>We have already helped over 20 girls completely change their lives — from regular jobs, stress and financial limits to freedom, high earnings and living on their own terms.</p>
+      <p>We don't promise overnight miracles. We promise a real system, hard work from the team and actual results.</p>
+      <p style="color:var(--ivory);">Huyoza Model Agency — where your OnlyFans career gets a real boost.</p>
+    </div>
+    <div>
+      <div class="stat-block">
+        <div class="num">20+</div>
+        <div class="cap">Models who've gone from a day job to running their account full-time with our team behind them.</div>
+      </div>
+      <div class="stat-block">
+        <div class="num">Top 1%</div>
+        <div class="cap">Where every model we currently manage ranks among OnlyFans creators.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">How It Works</span>
+      <h2>Five steps, start to finish.</h2>
+      <p>A straightforward path from application to your first payout — no guesswork along the way.</p>
+    </div>
+    <div class="process-list">
+      <div class="process-item">
+        <div class="process-num">01</div>
+        <div><h3>Fill out a short application</h3><p>Tell us a little about yourself. It takes a few minutes.</p></div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">02</div>
+        <div><h3>We schedule a call</h3><p>Zoom or phone — we get to know each other and answer your questions.</p></div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">03</div>
+        <div><h3>We sign the contract and set the strategy</h3><p>Clear terms, a plan tailored to you, before anything goes live.</p></div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">04</div>
+        <div><h3>We create or take over the account and start promotion</h3><p>Our team handles setup, content strategy and advertising.</p></div>
+      </div>
+      <div class="process-item final">
+        <div class="process-num">05</div>
+        <div><h3>You earn, we work</h3><p>You focus on content — we handle the rest, every day.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">Frequently Asked Questions</span>
+      <h2>What you're probably wondering.</h2>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>Do I have to show my face?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>Yes. Models who show their face achieve significantly higher earnings. We build accounts based on trust and authenticity, so we only work with models who are willing to show their face.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>What are the requirements?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>18+, commitment and willingness to cooperate. You don't need experience — we will teach you everything.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>Is the contract exclusive?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>Yes. While working with us you cannot work with another agency at the same time. We are loyal and expect the same from you.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>How much time do I need to dedicate?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>Minimum 4–6 hours per week. The more you engage, the faster and higher your earnings will be.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>What are my responsibilities?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>Creating SFW and NSFW content (photos and videos).</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>How much does the agency take?</span><span class="plus">+</span></button>
+      <div class="faq-a">
+        <div class="split"><span>Our split</span><b>50 / 50</b></div>
+        <p style="margin-top:16px;">This is one of the fairest models on the market. We do almost all of the work — advertising, chatting, editing, promotion, management — and you get money you most likely wouldn't earn on your own. 50% of a big result is much more than 100% working alone.</p>
+      </div>
+    </div>
+
+    <div class="faq-cta">
+      <h3>Ready for a new, better life?</h3>
+      <a class="btn-primary" href="#apply">Apply Now</a>
+    </div>
+  </div>
+</section>
+
+<section class="apply" id="apply">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">Application</span>
+      <h2>Start your application.</h2>
+      <p>A few details so we know who we're talking to on the call.</p>
+    </div>
+
+    <div class="apply-panel">
+      <form id="applyForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Name / Nickname</label>
+            <input id="name" name="name" type="text" required />
+          </div>
+          <div class="field">
+            <label for="contact">Email / Telegram / WhatsApp</label>
+            <input id="contact" name="contact" type="text" required />
+          </div>
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" min="18" required />
+          </div>
+          <div class="field">
+            <label for="location">Country / City</label>
+            <input id="location" name="location" type="text" required />
+          </div>
+          <div class="field full">
+            <label for="existing">Do you already have an OnlyFans account? If yes, what are your average monthly earnings?</label>
+            <input id="existing" name="existing" type="text" placeholder="e.g. No / Yes — approx. $..." />
+          </div>
+          <div class="field">
+            <label for="hours">How many hours per week can you dedicate?</label>
+            <select id="hours" name="hours" required>
+              <option value="">Select…</option>
+              <option>4–6 hours</option>
+              <option>7–10 hours</option>
+              <option>10–20 hours</option>
+              <option>20+ hours</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="comfort">Are you comfortable showing your face and nudity?</label>
+            <select id="comfort" name="comfort" required>
+              <option value="">Select…</option>
+              <option>Yes, both</option>
+              <option>Face only</option>
+              <option>Neither — not comfortable</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="start">When can you start?</label>
+            <input id="start" name="start" type="text" placeholder="e.g. Immediately / In 2 weeks" required />
+          </div>
+          <div class="field full">
+            <label for="questions">Any questions? Feel free to ask.</label>
+            <textarea id="questions" name="questions"></textarea>
+          </div>
+        </div>
+        <div class="form-submit">
+          <button class="btn-primary" type="submit" style="border:none; cursor:pointer;">Send Application</button>
+        </div>
+        <p class="form-note">By submitting, you confirm you are 18 or older.</p>
+      </form>
+      <div class="success-msg" id="successMsg">Thanks — your application is in. We'll reach out to schedule a call.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© 2026 Huyoza Model Agency. All applicants must be 18+.</div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other => {
+        if(other !== item){
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+        }
+      });
+      if(isOpen){
+        item.classList.remove('open');
+        a.style.maxHeight = null;
+      } else {
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  const form = document.getElementById('applyForm');
+  const success = document.getElementById('successMsg');
+
+  // Force the hero video to play — some embedded/sandboxed contexts block the
+  // autoplay attribute even when muted. This retries on load and on first interaction.
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    const tryPlay = () => heroVideo.play().catch(() => {});
+    tryPlay();
+    window.addEventListener('load', tryPlay);
+    document.addEventListener('click', tryPlay, { once: true });
+    document.addEventListener('touchstart', tryPlay, { once: true });
+  }
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Something went wrong.');
+      }
+
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Application';
+      alert(err.message || 'Could not submit application. Please try again.');
+    }
+  });
+</script>
+
+</body>
+</html>

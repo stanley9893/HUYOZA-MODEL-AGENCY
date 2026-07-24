@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Huyoza Agency — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#140A12; --panel:#1E1120; --ivory:#F3ECE3; --ivory-dim:#B7ACA2;
+    --gold:#B8935A; --gold-bright:#D9B679; --line:rgba(243,236,227,0.12);
+    --new:#D9B679; --contacted:#7FA98A; --rejected:#B06A6A;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg); color:var(--ivory); font-family:'Inter',sans-serif; margin:0; padding:40px 24px;}
+  h1{font-family:'Fraunces',serif; font-weight:500; font-size:1.6rem; margin:0 0 6px;}
+  .sub{color:var(--ivory-dim); font-size:0.9rem; margin-bottom:32px;}
+  .wrap{max-width:1100px; margin:0 auto;}
+
+  /* login gate */
+  #login{max-width:340px; margin:80px auto; text-align:center;}
+  #login input{
+    width:100%; padding:12px 14px; margin-top:20px; background:rgba(243,236,227,0.05);
+    border:1px solid var(--line); color:var(--ivory); border-radius:2px; font-size:0.95rem;
+  }
+  #login button{
+    margin-top:16px; width:100%; padding:12px; background:var(--gold); color:var(--bg);
+    border:none; font-weight:600; border-radius:2px; cursor:pointer;
+  }
+  #loginError{color:var(--rejected); font-size:0.85rem; margin-top:12px; display:none;}
+
+  #dashboard{display:none;}
+  .stats{display:flex; gap:16px; margin-bottom:32px; flex-wrap:wrap;}
+  .stat{background:var(--panel); border:1px solid var(--line); padding:16px 22px; border-radius:4px;}
+  .stat .n{font-family:'Fraunces',serif; font-size:1.6rem; color:var(--gold-bright);}
+  .stat .l{font-size:0.78rem; color:var(--ivory-dim); text-transform:uppercase; letter-spacing:0.06em;}
+
+  table{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  th{text-align:left; color:var(--ivory-dim); font-weight:500; padding:10px 12px; border-bottom:1px solid var(--line); font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em;}
+  td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:hover td{background:rgba(243,236,227,0.03);}
+  .badge{display:inline-block; padding:4px 10px; border-radius:20px; font-size:0.76rem; font-weight:600;}
+  .badge.new{background:rgba(217,182,121,0.15); color:var(--new);}
+  .badge.contacted{background:rgba(127,169,138,0.15); color:var(--contacted);}
+  .badge.rejected{background:rgba(176,106,106,0.15); color:var(--rejected);}
+  select.status-select{
+    background:var(--panel); color:var(--ivory); border:1px solid var(--line);
+    padding:6px 8px; border-radius:2px; font-size:0.82rem;
+  }
+  .empty{text-align:center; padding:60px 0; color:var(--ivory-dim);}
+  .refresh{
+    background:none; border:1px solid var(--gold); color:var(--gold-bright);
+    padding:8px 18px; border-radius:2px; cursor:pointer; font-size:0.85rem; margin-bottom:20px;
+  }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>Admin Login</h1>
+  <p class="sub">Enter the admin password to view applications.</p>
+  <input type="password" id="pwInput" placeholder="Password" />
+  <button onclick="login()">Enter</button>
+  <div id="loginError">Incorrect password.</div>
+</div>
+
+<div id="dashboard" class="wrap">
+  <h1>Applications</h1>
+  <p class="sub">Every submission from the application form, newest first.</p>
+
+  <div class="stats" id="stats"></div>
+  <button class="refresh" onclick="loadApplications()">Refresh</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Contact</th><th>Age</th><th>Location</th>
+        <th>Hours/wk</th><th>Comfort</th><th>Start</th><th>Notes</th>
+        <th>Submitted</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty" id="empty" style="display:none;">No applications yet.</div>
+</div>
+
+<script>
+  let ADMIN_PW = '';
+
+  function login(){
+    const pw = document.getElementById('pwInput').value;
+    ADMIN_PW = pw;
+    loadApplications(true);
+  }
+
+  document.getElementById('pwInput').addEventListener('keydown', e => {
+    if(e.key === 'Enter') login();
+  });
+
+  async function loadApplications(isLogin){
+    try{
+      const res = await fetch('/api/applications', {
+        headers: { 'x-admin-password': ADMIN_PW }
+      });
+      if(res.status === 401){
+        if(isLogin){
+          document.getElementById('loginError').style.display = 'block';
+        }
+        return;
+      }
+      const apps = await res.json();
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      render(apps);
+    } catch(err){
+      alert('Could not reach the server.');
+    }
+  }
+
+  function render(apps){
+    const tbody = document.getElementById('tbody');
+    const empty = document.getElementById('empty');
+    const stats = document.getElementById('stats');
+
+    const counts = { new: 0, contacted: 0, rejected: 0 };
+    apps.forEach(a => { counts[a.status] = (counts[a.status]||0) + 1; });
+
+    stats.innerHTML = `
+      <div class="stat"><div class="n">${apps.length}</div><div class="l">Total</div></div>
+      <div class="stat"><div class="n">${counts.new||0}</div><div class="l">New</div></div>
+      <div class="stat"><div class="n">${counts.contacted||0}</div><div class="l">Contacted</div></div>
+      <div class="stat"><div class="n">${counts.rejected||0}</div><div class="l">Rejected</div></div>
+    `;
+
+    if(apps.length === 0){
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = apps.map(a => `
+      <tr>
+        <td>${escapeHtml(a.name)}</td>
+        <td>${escapeHtml(a.contact)}</td>
+        <td>${escapeHtml(String(a.age))}</td>
+        <td>${escapeHtml(a.location)}</td>
+        <td>${escapeHtml(a.hours)}</td>
+        <td>${escapeHtml(a.comfort)}</td>
+        <td>${escapeHtml(a.start)}</td>
+        <td>${escapeHtml(a.questions || a.existing || '—')}</td>
+        <td>${new Date(a.submittedAt).toLocaleDateString()}</td>
+        <td>
+          <select class="status-select" onchange="updateStatus('${a.id}', this.value)">
+            <option value="new" ${a.status==='new'?'selected':''}>New</option>
+            <option value="contacted" ${a.status==='contacted'?'selected':''}>Contacted</option>
+            <option value="rejected" ${a.status==='rejected'?'selected':''}>Rejected</option>
+          </select>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function updateStatus(id, status){
+    await fetch('/api/applications/' + id, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ status })
+    });
+    loadApplications();
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+</script>
+
+</body>
+</html>
